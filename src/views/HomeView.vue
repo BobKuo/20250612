@@ -3,11 +3,11 @@
     <v-row>
       <v-col cols="12">
         <h1>目前事項</h1>
-        <span v-for="(item,i) in list.items" :key="i">{{ item.text }} => </span>
+        <span v-for="(item, i) in list.items" :key="i">{{ item.text }} => </span>
         <h2>{{ list.currentItem }}</h2>
         <!-- <h2>{{ list.timeleft }}</h2> -->
         <!-- <h2>{{ timeLeftText }}</h2> -->
-        <div style="border: 1px solid red;">
+        <div style="border: 1px solid red">
           <DigitNumber v-for="(data, i) in timeLeftText" :key="i" color="white" :data="data" />
         </div>
       </v-col>
@@ -51,11 +51,34 @@ const STATUS = {
 }
 const status = ref(STATUS.STOP)
 
+//
+let tick_audio = new Audio(new URL('@/assets/clock-24340.mp3', import.meta.url).href)
+tick_audio.loop = true // 讓音樂循環
+
+// 休息音樂
+let break_audio = null
+
 // 計時器
 let timer = 0
 // 開始計時器
 // 暫停繼續 + 停止開始
 const startTimer = () => {
+  if (!list.isBreak) {
+    // 事項階段，播放tick
+    tick_audio.play().catch(e => {
+      console.warn('無法播放tick音樂：', e)
+    })
+  } else {
+    // 休息階段，播放休息音樂
+    if (!break_audio) {
+      break_audio = new Audio(settings.selectedBreak.file)
+      break_audio.loop = true // 讓音樂循環
+      break_audio.play().catch(e => {
+        console.warn('無法自動播放休息音樂：', e)
+      })
+    }
+  }
+
   // 如果是停止開始，更新目前事項
   if (status.value === STATUS.STOP && list.items.length > 0) {
     list.setCurrentItem()
@@ -77,6 +100,8 @@ const startTimer = () => {
 const pause = () => {
   clearInterval(timer)
   status.value = STATUS.PAUSE
+
+  tick_audio.pause()
 }
 
 const finish = () => {
@@ -84,9 +109,30 @@ const finish = () => {
 
   status.value = STATUS.STOP
 
-  const audio = new Audio()
-  audio.src = settings.selectedAlarm.file
-  audio.play()
+  //
+  if (tick_audio) {
+    console.log('停止 tick 音樂')
+    tick_audio.pause()
+    tick_audio.currentTime = 0
+  }
+
+  // 停止休息音樂
+  if (break_audio) {
+    console.log('停止 通知 音樂')
+    break_audio.pause()
+    break_audio.currentTime = 0
+    break_audio = null
+  }
+
+  // 事項完成
+  if (!list.isBreak) {
+    // 播放通知音樂
+    console.log('播放 通知 音樂')
+    const audio = new Audio(settings.selectedAlarm.file)
+    audio.play().catch(e => {
+      console.warn('無法自動播放通知音樂：', e)
+    })
+  }
 
   const { show, isSupported } = useWebNotification({
     title: '事項完成',

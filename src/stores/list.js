@@ -96,6 +96,7 @@ export const useListStore = defineStore(
       setCurrentItem,
       countdown,
       setFinishItem,
+      isBreak,
     }
   },
   {

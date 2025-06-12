@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center">鈴聲設定</h1>
+        <h1 class="text-center">通知音樂設定</h1>
       </v-col>
       <v-col cols="12">
         <v-table>
@@ -10,7 +10,8 @@
             <tr>
               <th>名稱</th>
               <th>試聽</th>
-              <th>選擇</th>
+              <th>通知選擇</th>
+              <th>休息選擇</th>
             </tr>
           </thead>
           <tbody>
@@ -20,7 +21,12 @@
                 <audio controls :src="alarm.file" />
               </td>
               <td>
-                <v-radio-group v-model="settings.selected" hide-details>
+                <v-radio-group v-model="settings.alarm_selected" hide-details>
+                  <v-radio :value="alarm.id" />
+                </v-radio-group>
+              </td>
+              <td>
+                <v-radio-group v-model="settings.break_selected" hide-details>
                   <v-radio :value="alarm.id" />
                 </v-radio-group>
               </td>
