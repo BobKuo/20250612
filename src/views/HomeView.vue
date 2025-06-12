@@ -3,10 +3,13 @@
     <v-row>
       <v-col cols="12">
         <h1>目前事項</h1>
+        <span v-for="(item,i) in list.items" :key="i">{{ item.text }} => </span>
         <h2>{{ list.currentItem }}</h2>
-        <h2>{{ list.timeleft }}</h2>
-        <h2>{{ timeLeftText }}</h2>
-        <DigitNumber v-for="(data, i) in timeLeftText" :key="i" color="white" :data="data" />
+        <!-- <h2>{{ list.timeleft }}</h2> -->
+        <!-- <h2>{{ timeLeftText }}</h2> -->
+        <div style="border: 1px solid red;">
+          <DigitNumber v-for="(data, i) in timeLeftText" :key="i" color="white" :data="data" />
+        </div>
       </v-col>
       <v-col cols="12">
         <!--
