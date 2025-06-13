@@ -52,7 +52,7 @@ const STATUS = {
 const status = ref(STATUS.STOP)
 
 //
-let tick_audio = new Audio(new URL('@/assets/clock-24340.mp3', import.meta.url).href)
+const tick_audio = new Audio(new URL('@/assets/clock-24340.mp3', import.meta.url).href)
 tick_audio.loop = true // 讓音樂循環
 
 // 休息音樂
@@ -63,20 +63,20 @@ let timer = 0
 // 開始計時器
 // 暫停繼續 + 停止開始
 const startTimer = () => {
-  if (!list.isBreak) {
-    // 事項階段，播放tick
-    tick_audio.play().catch(e => {
-      console.warn('無法播放tick音樂：', e)
-    })
-  } else {
+  if (list.isBreak) {
     // 休息階段，播放休息音樂
     if (!break_audio) {
       break_audio = new Audio(settings.selectedBreak.file)
       break_audio.loop = true // 讓音樂循環
-      break_audio.play().catch(e => {
-        console.warn('無法自動播放休息音樂：', e)
+      break_audio.play().catch(error => {
+        console.warn('無法自動播放休息音樂：', error)
       })
     }
+  } else {
+    // 事項階段，播放tick
+    tick_audio.play().catch(error => {
+      console.warn('無法播放tick音樂：', error)
+    })
   }
 
   // 如果是停止開始，更新目前事項
@@ -129,8 +129,8 @@ const finish = () => {
     // 播放通知音樂
     console.log('播放 通知 音樂')
     const audio = new Audio(settings.selectedAlarm.file)
-    audio.play().catch(e => {
-      console.warn('無法自動播放通知音樂：', e)
+    audio.play().catch(error => {
+      console.warn('無法自動播放通知音樂：', error)
     })
   }
 

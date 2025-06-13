@@ -31,6 +31,8 @@ export default defineConfig({
         // 忽略網址參數，不同參數當作相同檔案
         // a.jpg = a.jpg?fbclid=1234
         ignoreURLParametersMatching: [/.*/],
+        // 更改預設大小 2MB -> 5MB
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
       },
       // 網站設定
       manifest: {
