@@ -45,7 +45,7 @@
               @click="toggleCtrl(music)"
             />
           </v-col>
-          <v-col v-show="isWide || music.showCtrk" cols="12" :order="audioOrder" sm="8">
+          <v-col v-show="isWide || music.showCtrl" cols="12" :order="audioOrder" sm="8">
             <audio class="w-100" controls :src="music.file" />
           </v-col>
           <v-col class="d-flex align-center" cols="4" order="3" sm="2">
