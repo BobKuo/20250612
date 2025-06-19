@@ -41,7 +41,7 @@
           <v-col class="d-flex align-center" cols="4" order="1" sm="2">{{ music.name }}</v-col>
           <v-col v-show="!isWide" cols="4" order="2" sm="8">
             <v-btn
-              :icon="music.showCtrl ? 'mdi:unfold-less-horizontal' : 'mdi-unfold-more-horizontal'"
+              :icon="music.showCtrl ? 'mdi-unfold-less-horizontal' : 'mdi-unfold-more-horizontal'"
               @click="toggleCtrl(music)"
             />
           </v-col>
