@@ -2,14 +2,13 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1>目前事項</h1>
-        <span v-for="(item, i) in list.items" :key="i">{{ item.text }} => </span>
-        <h2>{{ list.currentItem }}</h2>
-        <!-- <h2>{{ list.timeleft }}</h2> -->
-        <!-- <h2>{{ timeLeftText }}</h2> -->
-        <div style="border: 1px solid red">
-          <DigitNumber v-for="(data, i) in timeLeftText" :key="i" color="white" :data="data" />
-        </div>
+        <DigitNumber
+          v-for="(data, i) in timeLeftText"
+          :key="i"
+          :color="digitColor"
+          :data="data"
+          style="width: 15%; height: 100%"
+        />
       </v-col>
       <v-col cols="12">
         <!--
@@ -18,6 +17,7 @@
           2. 目前沒有事項或沒有未完成事項
         -->
         <v-btn
+          class="bg-purple-darken-2"
           :disabled="
             status === STATUS.COUNTING || (list.currentItem.length === 0 && list.items.length === 0)
           "
@@ -25,9 +25,39 @@
           @click="startTimer"
         />
         <!-- 只有倒數中才能按暫停 -->
-        <v-btn :disabled="status !== STATUS.COUNTING" icon="mdi-pause" @click="pause" />
+        <v-btn
+          class="bg-purple-darken-2"
+          :disabled="status !== STATUS.COUNTING"
+          icon="mdi-pause"
+          @click="pause"
+        />
         <!-- 目前有事項才能跳過 -->
-        <v-btn :disabled="list.currentItem.length === 0" icon="mdi-skip-next" @click="finish" />
+        <v-btn
+          class="bg-purple-darken-2"
+          :disabled="list.currentItem.length === 0"
+          icon="mdi-skip-next"
+          @click="finish"
+        />
+      </v-col>
+      <v-col cols="12">
+        <v-row id="item-list" class="">
+          <v-col id="current-color" cols="6">
+            <div id="current-title">目前事項：</div>
+            <div>{{ list.currentItem }}</div>
+            <div v-if="list.items.length > 0" id="current-left">
+              尚餘項目：{{ list.items.length }}
+            </div>
+          </v-col>
+          <v-col
+            v-for="(item, i) in list.items"
+            :key="i"
+            class="item-color"
+            cols="3"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"
+          >
+            {{ item.text }}
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -36,6 +66,7 @@
 <script setup>
 import { useWebNotification } from '@vueuse/core'
 import { computed, ref } from 'vue'
+import { useTheme } from 'vuetify'
 import DigitNumber from '@/components/DigitNumber.vue'
 import { useListStore } from '@/stores/list'
 import { useSettingsStore } from '@/stores/settings'
@@ -51,12 +82,18 @@ const STATUS = {
 }
 const status = ref(STATUS.STOP)
 
-//
+// 進行中音樂
 const tick_audio = new Audio(new URL('@/assets/clock-24340.mp3', import.meta.url).href)
 tick_audio.loop = true // 讓音樂循環
 
 // 休息音樂
 let break_audio = null
+
+//
+const theme = useTheme()
+const digitColor = computed(() => {
+  return theme.global.current.value.dark ? 'white' : 'black'
+})
 
 // 計時器
 let timer = 0
@@ -158,3 +195,56 @@ const timeLeftText = computed(() => {
   return m + ':' + s
 })
 </script>
+
+<style scoped>
+.v-container,
+.v-col,
+body {
+  color: #222;
+}
+
+#current-color {
+  background: #f18973;
+  color: #fefbd8;
+
+  position: relative;
+}
+
+#current-title {
+  position: absolute;
+  top: -3px;
+  left: -6px;
+  /* background: #fff; */
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+#current-left {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  /* background: #fff; */
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.item-color:nth-of-type(4n) {
+  background: #d5f4e6;
+}
+
+.item-color:nth-of-type(4n + 1) {
+  background: #80ced6;
+}
+
+.item-color:nth-of-type(4n + 2) {
+  background: #fefbd8;
+}
+
+.item-color:nth-of-type(4n + 3) {
+  background: #618685;
+}
+</style>

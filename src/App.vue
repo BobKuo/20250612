@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar>
       <v-container class="d-flex align-center">
-        <v-app-bar-title>番茄鐘</v-app-bar-title>
+        <v-app-bar-title style="cursor: pointer" @click="toggleTheme">番茄鐘</v-app-bar-title>
         <v-btn prepend-icon="mdi-home" to="/">首頁</v-btn>
         <v-btn prepend-icon="mdi-format-list-bulleted" to="/list">事項</v-btn>
         <v-btn prepend-icon="mdi-cog" to="/settings">設定</v-btn>
@@ -51,6 +51,11 @@
 </template>
 
 <script setup>
+import { useTheme } from 'vuetify'
+const theme = useTheme()
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
 // import CardA from '@/components/CardA.vue'
 // import CardB from '@/components/CardB.vue'
 // import SlotExample from '@/components/SlotExample.vue'
